@@ -1,4 +1,4 @@
-name: Format Python code
+name: Run Precommit
 
 on:
   push:
