@@ -14,7 +14,7 @@ class EulerMethod(ODESolver):
 
         dt = t[1] - t[0]
         solution = [initial_conditions]
- 
+
         for t_step in range(1, t.shape[0]):
             t_i = t[t_step]
             y_old = solution[-1]
