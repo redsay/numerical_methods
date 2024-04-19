@@ -7,20 +7,23 @@ class EulerMethod(ODESolver):
     def __init__(self, equation):
         self.equation = equation
 
-    def solve(self, initial_conditions, t_span, dt=0.01):
+    def solve(self, initial_conditions, t, tol):
 
-        t0, tf = t_span
-        t = t0
+        # t0, tf = t_span
+        # t = t0
 
+        dt = t[1] - t[0]
         solution = [initial_conditions]
-        while t < tf:
+ 
+        for t_step in range(1, t.shape[0]):
+            t_i = t[t_step]
             y_old = solution[-1]
-            dy_dt = self.equation(t, y_old)
+            dy_dt = self.equation(t_i, y_old)
             y_new = y_old + dt * dy_dt
             solution.append(y_new)
-            t += dt
 
-        is_converged = self.convergence_test(y_old, y_new, 0.01)
+        solution = np.array(solution)
+        is_converged = self.convergence_test(y_old, y_new, tol)
 
         return solution, is_converged
 
