@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class Utilities:
-    def __init__(self):
-        pass
-
-    def plot_solution(self, solution_arrays, fig_name=None, labels=None):
+    def plot_solution(solution_arrays, fig_name=None, title=None, labels=None):
         """
         Plots multiple solution arrays on the same graph. Either analytical, numerical, or both
 
@@ -37,10 +35,39 @@ class Utilities:
             else:
                 plt.scatter(t_values, y_values, label=label, marker="x")
 
+        # print(fig_name)
         plt.xlabel("Time")
         plt.ylabel("y(t)")
-        plt.title(fig_name)
+        plt.title(title)
         plt.legend()
         plt.grid()
-        plt.savefig("./tests/forward_euler-test.pdf")
+        plt.savefig(fname=fig_name)
         plt.show()
+
+
+class Validation:
+    def validate_equation(eqn):
+        try:
+            result = eqn(*args, **kwargs)
+            return result
+        except:
+            print(f"An error occured while evaluating the function{e}")
+            return None
+
+    def validate_conditions(initial_condition, t_span):
+
+        if not isinstance(initial_condition, (int, float)):
+            raise ValueError(
+                "Initial condition must be provided as an integer or float."
+            )
+
+        if not isinstance(t_span, (np.ndarray)):
+            raise ValueError("Time span must be an array")
+        if t_span.shape[0] < 2:
+            raise ValueError("Time span must contain 2 or more time-stamps.")
+        if t_span[0] > t_span[1]:
+            raise ValueError("The final time must be greater than the intial time.")
+
+    def validate_params(parameters):
+        if not isinstance(parameters, dict):
+            raise ValueError("Parameters must be specified with a dictionary.")

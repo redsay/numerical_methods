@@ -20,13 +20,14 @@ class ODESolver(ABC):
         self.equation = equation
 
     @abstractmethod
-    def solve(self, initial_condition, t_span):
+    def solve(self, initial_condition, t_span, dt):
         """
         Solve the differential equation
 
         Parameters:
         - initial_condition: Initial conditions of the ODE system
-        - t_span: Type (t0,tf) representing the start and end points of the integration
+        - t_span: Tuple or list (t0,tf) representing the start and end points of the integration
+        - dt: Time-step of time-series from t0 to tf
 
         Returns:
         - solution: solution of the ODE
@@ -55,14 +56,5 @@ class ODESolver(ABC):
 
         Returns:
         - is_converged: boolean indicating whether the solution has converged
-        """
-        pass
-
-    def check_first_order(self):
-        """
-        Checks if the provided ODE is first order
-
-        Returns:
-        - is_first_order: Boolean indicating whether or not the ODE is first order
         """
         pass
