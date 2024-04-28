@@ -1,31 +1,34 @@
 import numpy as np
 
 from ode_solve.odesolve import ODESolver
+from ode_solve.odeutilities import Validation
 
 
 class EulerMethod(ODESolver):
     def __init__(self, equation):
         self.equation = equation
 
-    def solve(self, initial_conditions, t, tol):
+    def solve(self, initial_condition, t_span):
 
-        # t0, tf = t_span
-        # t = t0
+        # validate the initial conditions
+        Validation.validate_conditions(initial_condition, t_span)
 
-        dt = t[1] - t[0]
-        solution = [initial_conditions]
+        dt = t_span[1] - t_span[0]
+        solution = [initial_condition]
 
-        for t_step in range(1, t.shape[0]):
-            t_i = t[t_step]
+        for t_step in range(1, t_span.shape[0]):
+            t_i = t_span[t_step]
             y_old = solution[-1]
-            dy_dt = self.equation(t_i, y_old)
+            try:
+                dy_dt = self.equation(t_i, y_old)
+            except:
+                print(f"An error occured while evaluating the function{self.equation}")
             y_new = y_old + dt * dy_dt
             solution.append(y_new)
 
         solution = np.array(solution)
-        is_converged = self.convergence_test(y_old, y_new, tol)
 
-        return solution, is_converged
+        return solution
 
     def set_parameters(self, parameters):
         """
@@ -49,9 +52,6 @@ class EulerMethod(ODESolver):
         Returns:
         - is_converged: boolean indicating whether the solution has converged
         """
-
-        is_converged = False
-
         # Handle case where solution_old and solution_new are single floats
         if isinstance(solution_old, (int, float)) and isinstance(
             solution_new, (int, float)
@@ -67,7 +67,8 @@ class EulerMethod(ODESolver):
                 < tolerance
             )
 
-        if convergence == True:
-            is_converged = True
-
-        return is_converged
+        if convergence == False:
+            msg = "The solution is not converged w.r.t the analytic solution. Try to adjust the resolution"
+        else:
+            msg = "The solution is converged w.r.t the analytic solution"
+        return msg
